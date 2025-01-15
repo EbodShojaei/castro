@@ -20,3 +20,6 @@ yarn-error.log*
 .yarn/
 .pnpm/
 .pnpm-workspace/
+
+# big files
+*.bin
