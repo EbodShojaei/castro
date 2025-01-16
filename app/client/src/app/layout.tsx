@@ -1,3 +1,4 @@
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Metadata } from 'next';
 import { AuthProvider } from '@/context/AuthContext';
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
@@ -27,6 +28,7 @@ export default function RootLayout({
             </div>
           </AuthProvider>
         </ErrorBoundary>
+        <SpeedInsights />
       </body>
     </html>
   );
