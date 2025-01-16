@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ethers } from 'ethers';
 import { Client } from '@xmtp/xmtp-js';
-import Cookies from 'js-cookie';
+import Spinner from '@/components/shared/Spinner';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -30,25 +30,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Set loading to true initially
   const [address, setAddress] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [client, setClient] = useState<Client | null>(null);
   const router = useRouter();
 
-  const connect = async () => {
-    if (typeof window === 'undefined' || !window.ethereum) {
-      // throw new Error('Please install MetaMask');
-      // Show message to install MetaMask if not installed
-      setError('Please install MetaMask');
-    }
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const response = await fetch('/api/auth/check', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
 
-    setIsLoading(true);
+      if (response.ok) {
+        const data = await response.json();
+        setIsAuthenticated(true);
+        setAddress(data.address);
+      } else {
+        setIsAuthenticated(false);
+      }
+
+      setIsLoading(false);
+    };
+
+    checkAuthentication();
+  }, []);
+
+  const connect = async () => {
     setError(null); // Reset error at the start of the connection attempt
     try {
-      if (!window.ethereum) {
-        throw new Error('Ethereum provider is not available');
+      if (typeof window === 'undefined' || !window.ethereum) {
+        setError('Please install MetaMask');
+        return;
       }
+
       const provider = new ethers.providers.Web3Provider(
         window.ethereum as any,
       );
@@ -79,29 +95,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     } catch {
       setError('Failed to connect. Please make sure MetaMask is unlocked.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const disconnect = async () => {
-    // Call the API to clear the JWT cookie on the server-side
     await fetch('/api/auth/disconnect', { method: 'POST' });
-    // Clear authentication state and cookies on the server-side
     setIsAuthenticated(false);
     setAddress(null);
     setClient(null);
     setError(null);
-    // Redirect to the home page after disconnect
     router.push('/');
   };
 
-  useEffect(() => {
-    const jwtToken = Cookies.get('jwt_token');
-    if (jwtToken) {
-      setIsAuthenticated(true);
-    }
-  }, []);
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <AuthContext.Provider
