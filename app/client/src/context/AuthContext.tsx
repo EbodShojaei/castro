@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ethers } from 'ethers';
 import { Client } from '@xmtp/xmtp-js';
 import Spinner from '@/components/shared/Spinner';
+import { ExternalProvider } from '@ethersproject/providers';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -66,7 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       const provider = new ethers.providers.Web3Provider(
-        window.ethereum as any,
+        window.ethereum as unknown as ExternalProvider,
       );
       const accounts = await provider.listAccounts();
 
