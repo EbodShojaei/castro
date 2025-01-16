@@ -15,7 +15,6 @@ interface CustomResolveOptions extends Omit<ResolveOptions, 'fallback'> {
 // Define custom webpack configuration
 interface CustomWebpackConfig extends Omit<WebpackConfig, 'resolve'> {
   experiments?: {
-    asyncWebAssembly?: boolean;
     layers?: boolean;
     topLevelAwait?: boolean;
   };
@@ -25,7 +24,7 @@ interface CustomWebpackConfig extends Omit<WebpackConfig, 'resolve'> {
 // Define webpack function type
 type WebpackConfigFunction = (
   config: CustomWebpackConfig,
-  context: { isServer: boolean }
+  context: { isServer: boolean },
 ) => CustomWebpackConfig;
 
 // Define the Next.js configuration
@@ -45,7 +44,6 @@ const nextConfig: NextConfig = {
 
     config.experiments = {
       ...config.experiments,
-      asyncWebAssembly: true,
       layers: true,
     };
 
@@ -56,11 +54,15 @@ const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb',
-      allowedOrigins: ['localhost:3001'],
+      allowedOrigins:
+        process.env.NODE_ENV === 'production'
+          ? [
+              process.env.NEXT_PUBLIC_ALLOWED_ORIGINS ||
+                'https://castro-chat.vercel.app',
+            ]
+          : ['http://localhost:3001'], // Default to localhost if not set
     },
   },
-
-  // Moved from experimental to root level
   serverExternalPackages: ['@xmtp/xmtp-js'],
 };
 

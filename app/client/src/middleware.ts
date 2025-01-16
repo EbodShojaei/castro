@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 export function middleware(req: any) {
   // Get JWT token from cookies
   const token = req.cookies.get('jwt_token');
+  // console.log('Token:', token);
 
   // If no token redirect to home
   if (!token) {
@@ -23,5 +24,5 @@ export function middleware(req: any) {
 
 // Specify  paths where middleware should run
 export const config = {
-  matcher: ['/chat'], // Protect these routes
+  matcher: ['/chat', '/api'], // Protect these routes
 };
