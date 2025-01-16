@@ -38,13 +38,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const connect = async () => {
     if (typeof window === 'undefined' || !window.ethereum) {
-      throw new Error('Please install MetaMask');
+      // throw new Error('Please install MetaMask');
+      // Show message to install MetaMask if not installed
+      setError('Please install MetaMask');
     }
 
     setIsLoading(true);
     setError(null); // Reset error at the start of the connection attempt
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      if (!window.ethereum) {
+        throw new Error('Ethereum provider is not available');
+      }
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum as any,
+      );
       const accounts = await provider.listAccounts();
 
       if (accounts.length > 0) {
@@ -71,9 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setError('No account found');
       }
     } catch {
-      setError(
-        'Failed to connect wallet. Please make sure MetaMask is installed and unlocked.',
-      );
+      setError('Failed to connect. Please make sure MetaMask is unlocked.');
     } finally {
       setIsLoading(false);
     }

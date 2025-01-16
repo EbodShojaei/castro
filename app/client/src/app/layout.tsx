@@ -1,6 +1,7 @@
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Metadata } from 'next';
 import { AuthProvider } from '@/context/AuthContext';
+import { Providers } from '@/components/shared/Providers';
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
 import Navbar from '@/components/shared/layout/Navbar';
 import Background from '@/components/shared/layout/Background';
@@ -21,11 +22,13 @@ export default function RootLayout({
       <body suppressHydrationWarning={true}>
         <ErrorBoundary>
           <AuthProvider>
-            <div className="relative z-10">
-              <Background />
-              <Navbar />
-              <main>{children}</main>
-            </div>
+            <Providers>
+              <div className="relative z-10">
+                <Background />
+                <Navbar />
+                <main>{children}</main>
+              </div>
+            </Providers>
           </AuthProvider>
         </ErrorBoundary>
         <SpeedInsights />

@@ -22,7 +22,7 @@ export default function Home() {
         <h1 className="mb-8 text-4xl font-bold">Castro Chat</h1>
 
         {error && (
-          <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-md">
+          <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-md text-center">
             {error}
           </div>
         )}

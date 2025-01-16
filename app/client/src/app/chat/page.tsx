@@ -45,7 +45,7 @@ export default function ChatPage() {
           </div>
         ) : error ? (
           <div className="flex justify-center items-center min-h-screen">
-            <div className="text-red-500 bg-red-100 p-4 rounded-md">
+            <div className="text-red-500 bg-red-100 p-4 rounded-md text-center">
               {error}
             </div>
           </div>

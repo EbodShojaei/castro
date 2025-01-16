@@ -54,7 +54,13 @@ body {
   padding: 12px;
   border-radius: 4px;
   margin-bottom: 16px;
-  text-align: center;
+  
+  /* Flexbox to center content */
+  display: flex;
+  justify-content: center;  /* Horizontally center the content */
+  align-items: center;      /* Vertically center the content */
+  text-align: center;       /* Ensure text inside is centered */
+  height: 50px;             /* Adjust height if needed */
 }
 
 /* Input Styling */
