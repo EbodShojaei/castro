@@ -1,0 +1,53 @@
+{
+  "name": "castro-chat",
+  "version": "0.1.0",
+  "description": "Castro Chat Client",
+  "type": "module",
+  "private": true,
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
+  },
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start",
+    "lint": "tsc --noEmit && eslint 'src/**/*.{ts,tsx}' && knip && depcheck",
+    "lint:fix": "tsc --noEmit && eslint 'src/**/*.{ts,tsx}' --fix && knip && depcheck",
+    "format": "prettier --write \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@ethersproject/providers": "^5.7.2",
+    "@metamask/providers": "^18.2.0",
+    "@types/js-cookie": "^3.0.6",
+    "@xmtp/xmtp-js": "^13.0.4",
+    "ethers": "^5.7.2",
+    "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.2",
+    "next": "15.0.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/webpack": "^5.28.5",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "autoprefixer": "^10.4.20",
+    "depcheck": "^1.4.7",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.2",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "knip": "^5.42.1",
+    "postcss": "^8.5.1",
+    "postcss-load-config": "^6.0.1",
+    "prettier": "^3.4.2",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ignores": [
+    "src/app/middleware.ts",
+    "autoprefixer",
+    "postcss",
+    "postcss-load-config"
+  ]
+}
