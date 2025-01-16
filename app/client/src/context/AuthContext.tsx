@@ -40,8 +40,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const checkAuthentication = async () => {
       const response = await fetch('/api/auth/check', {
-        method: 'GET',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
       });
 
       if (response.ok) {
@@ -86,6 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ address: userAddress }),
+          credentials: 'same-origin',
         });
 
         if (!response.ok) {
