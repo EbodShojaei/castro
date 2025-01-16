@@ -36,9 +36,9 @@ export default function Chat({ recipientAddress }: ChatProps) {
         if (response.data?.messages) {
           setMessages(response.data.messages);
         }
-      } catch (err) {
-        console.error('Error loading messages:', err);
-        setError('Failed to load messages. Please try again.');
+      } catch {
+        // console.error('Error loading messages:', err);
+        setError('Failed to load messages. Please check recipient address.');
       } finally {
         setLoading(false);
       }
@@ -58,8 +58,9 @@ export default function Chat({ recipientAddress }: ChatProps) {
       if (response.data?.messages) {
         setMessages(response.data.messages);
       }
-    } catch (error) {
-      console.error('Error sending message:', error);
+    } catch {
+      // console.error('Error sending message:', error);
+      setError('Failed to send message. Please try again.');
     }
   };
 

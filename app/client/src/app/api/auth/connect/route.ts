@@ -43,8 +43,8 @@ export async function POST(request: NextRequest) {
     });
 
     return response;
-  } catch (error) {
-    console.error('Error during session creation:', error);
+  } catch {
+    // console.error('Error during session creation:', error);
     return NextResponse.json(
       { error: 'Authentication failed' },
       { status: 500 },

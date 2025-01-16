@@ -20,8 +20,8 @@ export async function reply(ctx: ExtendedContext): Promise<void> {
     // Match the user input to the closest example.
     const matchedCommand = await mapper.getCommand(text);
     console.log(`Matched Example Input: ${matchedCommand}`);
-  } catch (error) {
-    console.error(error);
+  } catch {
+    // console.error(error);
   }
 
   // Execute the skill normally.
