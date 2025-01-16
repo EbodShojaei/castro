@@ -1,19 +1,29 @@
-import { Context } from '@xmtp/message-kit';
+import { ExtendedContext } from './extendedContext.js';
+import mapper from './mapper.js';
 
 /**
- * Reply function that handles the message.
- * Direct handling runs hot commands without any delay (AI processing).
- * Else it will be processed by the AI.
+ * Processes an incoming message by:
+ *   1. Initializing the mapper with the skill’s unique example inputs.
+ *   2. Matching the user input sentence to the closest example.
+ *   3. Executing the skill based on the incoming message.
  *
- * @param ctx Context
- * @returns void
+ * @param ctx ExtendedContext containing the message and unique example inputs.
  */
-export async function reply(ctx: Context): Promise<void> {
+export async function reply(ctx: ExtendedContext): Promise<void> {
   const { text } = ctx.message.content;
   if (!text) return;
-  if (!text.startsWith('/')) return; // this is where the magic happens 🪄
-  // TODO: agentReply(ctx);
 
-  // Handle direct commands
+  try {
+    // Initialize the mapper with the unique example inputs.
+    await mapper.initialize(ctx);
+
+    // Match the user input to the closest example.
+    const matchedCommand = await mapper.getCommand(text);
+    console.log(`Matched Example Input: ${matchedCommand}`);
+  } catch (error) {
+    console.error(error);
+  }
+
+  // Execute the skill normally.
   ctx.executeSkill(text);
 }

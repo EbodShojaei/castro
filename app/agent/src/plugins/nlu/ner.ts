@@ -1,5 +1,5 @@
 import { pipeline } from '@xenova/transformers';
-import { EntityRecognitionType } from './types';
+import { EntityRecognitionType } from './types.js';
 
 // Entity Recognition: Extracting specific entities (e.g., Bitcoin, Ethereum).
 
@@ -32,10 +32,19 @@ export class NERModel implements EntityRecognitionType {
   /**
    * Function to extract entities from the input text
    * @param text is the input text to extract entities from
-   * @returns Promise<string[]> is the list of entities extracted from the input text
+   * @returns Promise<any> is the list of entities, each with a label and score
    */
-  async extractEntities(text: string): Promise<string[]> {
-    const entities = await this.model(text);
-    return entities;
+  private async extractEntities(text: string): Promise<any> {
+    return await this.model(text);
+  }
+
+  /**
+   * Function to extract the best entity from the list of entities
+   */
+  async extractEntity(text: string): Promise<string> {
+    const entities = await this.extractEntities(text);
+    if (entities.length === 0) throw new Error('No entities found.');
+
+    return entities[0].entity;
   }
 }

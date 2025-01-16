@@ -1,5 +1,6 @@
-import * as tf from '@tensorflow-models/universal-sentence-encoder';
-import { TextEmbeddingType } from './types';
+import * as use from '@tensorflow-models/universal-sentence-encoder';
+import { TextEmbeddingType } from './types.js';
+import { preprocessText } from './utils.js';
 
 // Intent Recognition: Identifying the user's command (e.g., /price).
 
@@ -25,7 +26,7 @@ export class NLPModel implements TextEmbeddingType {
    * @returns Promise<void>
    */
   async load() {
-    this.model = await tf.load();
+    this.model = await use.load();
   }
 
   /**
@@ -36,6 +37,9 @@ export class NLPModel implements TextEmbeddingType {
   async getEmbedding(example: string | string[]): Promise<number[]> {
     // If length of text is greater than 1, compute the averaged embedding
     if (Array.isArray(example)) return this.getBatchEmbedding(example);
+
+    // Preprocess the input example
+    example = preprocessText(example);
 
     const tensor = await this.model.embed([example]);
     const embedding = await tensor.array();
@@ -52,6 +56,9 @@ export class NLPModel implements TextEmbeddingType {
     if (!examples || examples.length === 0) {
       throw new Error('Input examples array cannot be empty.');
     }
+
+    // Preprocess the input examples
+    examples = examples.map((example) => preprocessText(example));
 
     // Batch embedding for efficiency
     const tensors = await this.model.embed(examples);

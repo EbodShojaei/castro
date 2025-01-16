@@ -15,7 +15,7 @@ interface Model {
  */
 export interface TextEmbeddingType extends Model {
   load(): Promise<void>;
-  getEmbedding(text: string): Promise<number[]>;
+  getEmbedding(text: string | string[]): Promise<number[]>;
 }
 
 /**
@@ -26,16 +26,18 @@ export interface TextEmbeddingType extends Model {
  */
 export interface EntityRecognitionType extends Model {
   load(): Promise<void>;
-  extractEntities(text: string): Promise<string[]>;
+  extractEntity(text: string): Promise<string>;
 }
 
 /**
  * NaturalLanguageType interface for natural language understanding plugins
  * @interface
  * @method load loads the NLU model
- * @method process returns the entities and embedding of the input text
+ * @method getEmbedding returns the embedding of the input text
+ * @method extractEntity returns the entities in the input text
  */
 export interface NaturalLanguageType extends Model {
   load(): Promise<void>;
-  process(text: string): Promise<{ entities: string[]; embedding: number[] }>;
+  getEmbedding(text: string | string[]): Promise<number[]>;
+  extractEntity(text: string): Promise<string>;
 }

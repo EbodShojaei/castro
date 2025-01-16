@@ -2,7 +2,7 @@ import {
   NaturalLanguageType,
   TextEmbeddingType,
   EntityRecognitionType,
-} from './types';
+} from './types.js';
 
 // Natural Language Processing (NLP) focused on extracting structured meaning from unstructured text.
 
@@ -42,13 +42,20 @@ export class NLUModel implements NaturalLanguageType {
   }
 
   /**
-   * Function to process the input text
-   * @param text is the input text to process
-   * @returns Promise<{ entities: string[]; embedding: number[] }> is the entities and embedding of the input text
+   * Function to get the embedding of the input text
+   * @param text is the input text to get the embedding of
+   * @returns Promise<number[]> is the embedding of the input text
    */
-  async process(text: string) {
-    const entities = await this.entityRecognition.extractEntities(text);
-    const embedding = await this.embedding.getEmbedding(text);
-    return { entities, embedding };
+  async getEmbedding(text: string | string[]): Promise<number[]> {
+    return this.embedding.getEmbedding(text);
+  }
+
+  /**
+   * Function to get the entities in the input text
+   * @param text is the input text to extract entities from
+   * @returns Promise<string[]> is the list of entities extracted from the input text
+   */
+  async extractEntity(text: string): Promise<string> {
+    return this.entityRecognition.extractEntity(text);
   }
 }
