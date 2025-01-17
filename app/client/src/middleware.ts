@@ -1,28 +1,45 @@
 import { NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
+import { LRUCache } from 'lru-cache';
 
-export function middleware(req: any) {
-  // Get JWT token from cookies
-  const token = req.cookies.get('jwt_token');
-  // console.log('Token:', token);
+// Create an in-memory cache to store request timestamps
+const rateLimiter = new LRUCache({
+  max: 1000, // Maximum number of keys
+  ttl: 1000 * 60 * 15, // Set the time-to-live for entries (15 minutes)
+});
 
-  // If no token redirect to home
-  if (!token) {
-    return NextResponse.redirect(new URL('/', req.url));
+// Set the maximum number of requests allowed within the TTL window
+const MAX_REQUESTS_PER_WINDOW = 100;
+
+export function middleware(req: Request) {
+  const ip = req.headers.get('x-forwarded-for') || '127.0.0.1'; // Get the IP address of the user
+  const now = Date.now();
+
+  // If this IP is seen for the first time, create an entry for it
+  if (!rateLimiter.has(ip)) {
+    rateLimiter.set(ip, []);
   }
 
-  try {
-    // Verify token using JWT_SECRET
-    jwt.verify(token, process.env.JWT_SECRET || 'default-secret');
-    // If token is valid, proceed with original request
-    return NextResponse.next();
-  } catch {
-    // If token is invalid or expired then redirect to home
-    return NextResponse.redirect(new URL('/', req.url));
+  // Retrieve the request timestamps for the current IP
+  const timestamps = rateLimiter.get(ip) as number[];
+
+  // Filter out timestamps older than 15 minutes
+  const recentRequests = timestamps.filter(
+    (timestamp) => now - timestamp < 1000 * 60 * 15,
+  );
+
+  if (recentRequests.length >= MAX_REQUESTS_PER_WINDOW) {
+    // If the number of recent requests exceeds the limit, respond with a 429 Too Many Requests status
+    return new NextResponse('Too many requests', { status: 429 });
   }
+
+  // Otherwise, allow the request to proceed and log the timestamp
+  recentRequests.push(now);
+  rateLimiter.set(ip, recentRequests);
+
+  return NextResponse.next();
 }
 
-// Specify  paths where middleware should run
+// Specify paths where the middleware should be applied globally
 export const config = {
-  matcher: ['/chat', '/api'], // Protect these routes
+  matcher: ['/'], // Apply to all routes
 };
