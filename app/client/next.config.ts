@@ -1,6 +1,7 @@
-// next.config.ts
 import type { NextConfig } from 'next';
 import type { Configuration as WebpackConfig, ResolveOptions } from 'webpack';
+import TerserPlugin from 'terser-webpack-plugin'; // Minification plugin
+import JavaScriptObfuscator from 'webpack-obfuscator'; // Obfuscation plugin
 
 // Define custom resolve fallback type
 interface CustomResolveFallback {
@@ -24,13 +25,46 @@ interface CustomWebpackConfig extends Omit<WebpackConfig, 'resolve'> {
 // Define webpack function type
 type WebpackConfigFunction = (
   config: CustomWebpackConfig,
-  context: { isServer: boolean },
+  context: { isServer: boolean; dev: boolean },
 ) => CustomWebpackConfig;
 
 // Define the Next.js configuration
 const nextConfig: NextConfig = {
-  webpack: ((config, { isServer }) => {
+  webpack: ((config, { isServer, dev }) => {
     if (!isServer) {
+      // Ensure config.optimization is not undefined
+      if (!config.optimization) {
+        config.optimization = {};
+      }
+
+      // Disable source maps in production
+      if (!dev) {
+        config.devtool = false;
+
+        // Minify JavaScript using Terser
+        config.optimization.minimizer = [
+          new TerserPlugin({
+            terserOptions: {
+              compress: {
+                drop_console: true, // Remove console logs for production
+              },
+            },
+          }),
+        ];
+
+        // Optional: Add JavaScript Obfuscation
+        config.plugins?.push(
+          new JavaScriptObfuscator(
+            {
+              rotateStringArray: true, // Obfuscate string literals
+              stringArray: true, // Enable string obfuscation
+            },
+            ['excluded-file.js'], // Optional: Exclude certain files from obfuscation
+          ),
+        );
+      }
+
+      // Modify resolve to fallback modules for non-server environment
       config.resolve = {
         ...config.resolve,
         fallback: {
@@ -42,6 +76,7 @@ const nextConfig: NextConfig = {
       };
     }
 
+    // Enable Webpack experiments
     config.experiments = {
       ...config.experiments,
       layers: true,
