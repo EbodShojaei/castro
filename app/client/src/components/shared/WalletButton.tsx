@@ -18,7 +18,13 @@ const WalletButton: React.FC = () => {
     <button
       onClick={handleClick}
       disabled={isLoading}
-      className={`px-4 py-2 rounded text-white ${isLoading ? 'bg-gray-400 cursor-not-allowed' : isAuthenticated ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'}`}
+      className={`px-4 py-2 rounded text-white ${
+        isLoading
+          ? 'bg-gray-400 cursor-not-allowed'
+          : isAuthenticated
+            ? 'bg-red-500 hover:bg-red-600'
+            : 'bg-blue-500 hover:bg-blue-600'
+      }`}
     >
       {isLoading
         ? 'Connecting...'

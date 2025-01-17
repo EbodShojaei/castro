@@ -12,6 +12,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
+      // Redirect to /chat only when the user is authenticated
       router.push('/chat');
     }
   }, [isAuthenticated, isLoading, router]);
@@ -40,7 +41,8 @@ export default function Home() {
                   : 'bg-blue-500 hover:bg-blue-600'
               }`}
             >
-              {isLoading ? 'Connecting...' : 'Connect'}
+              {/* {isLoading ? 'Connecting...' : 'Connect'} */}
+              Chat
             </button>
           </div>
         )}

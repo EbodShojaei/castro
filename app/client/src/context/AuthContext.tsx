@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // Set loading to true initially
+  const [isLoading, setIsLoading] = useState(true);
   const [address, setAddress] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [client, setClient] = useState<Client | null>(null);
@@ -62,42 +62,74 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const connect = async () => {
     setError(null); // Reset error at the start of the connection attempt
     try {
+      // Check if MetaMask is available
       if (typeof window === 'undefined' || !window.ethereum) {
         setError('Please install MetaMask');
         return;
       }
 
       const provider = new ethers.providers.Web3Provider(
-        window.ethereum as unknown as ExternalProvider,
+        window.ethereum as ExternalProvider,
       );
+
+      // Get the list of accounts
       const accounts = await provider.listAccounts();
 
+      // If accounts are available (MetaMask is unlocked)
       if (accounts.length > 0) {
-        const clientInstance = await Client.create(provider.getSigner(), {
-          env: 'production',
-        });
-        setClient(clientInstance);
-
         const userAddress = accounts[0];
-        setAddress(userAddress);
-        setIsAuthenticated(true);
-
-        // Call API to authenticate and set JWT token in cookies
-        const response = await fetch('/api/auth/connect', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ address: userAddress }),
-          credentials: 'same-origin',
-        });
-
-        if (!response.ok) {
-          throw new Error('Authentication failed');
-        }
+        // Proceed with authentication and JWT token generation
+        await authenticateAndSetUser(userAddress, provider);
       } else {
-        setError('No account found');
+        // If no accounts found (MetaMask is locked), request account access
+        try {
+          const accountsFromRequest = (await window.ethereum.request({
+            method: 'eth_requestAccounts',
+          })) as string[];
+
+          if (accountsFromRequest.length > 0) {
+            const userAddress = accountsFromRequest[0];
+            // Proceed with authentication and JWT token generation
+            await authenticateAndSetUser(userAddress, provider);
+          } else {
+            setError('No account found');
+          }
+        } catch {
+          // Handle user rejection
+          setError('MetaMask connection request was rejected');
+        }
       }
     } catch {
-      setError('Failed to connect. Please make sure MetaMask is unlocked.');
+      setError('Failed to connect. Please check MetaMask is unlocked.');
+      // Disconnect if there is an error during connection
+      disconnect();
+    }
+  };
+
+  // Centralized function to authenticate and set the user address
+  const authenticateAndSetUser = async (
+    userAddress: string,
+    provider: ethers.providers.Web3Provider,
+  ) => {
+    setAddress(userAddress);
+    setIsAuthenticated(true);
+
+    // Set up XMTP client and authenticate
+    const clientInstance = await Client.create(provider.getSigner(), {
+      env: 'production', // Ensure using the production environment for XMTP
+    });
+    setClient(clientInstance);
+
+    // Call API to authenticate and set JWT token in cookies
+    const response = await fetch('/api/auth/connect', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ address: userAddress }),
+      credentials: 'same-origin',
+    });
+
+    if (!response.ok) {
+      setError('Failed to authenticate. Please try again.');
     }
   };
 
