@@ -23,6 +23,7 @@
     "@xmtp/xmtp-js": "^13.0.4",
     "ethers": "^5.7.2",
     "jsonwebtoken": "^9.0.2",
+    "lru-cache": "^11.0.2",
     "next": "15.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
@@ -47,6 +48,8 @@
     "postcss-load-config": "^6.0.1",
     "prettier": "^3.4.2",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "terser-webpack-plugin": "^5.3.11",
+    "typescript": "^5",
+    "webpack-obfuscator": "^3.5.1"
   }
 }
