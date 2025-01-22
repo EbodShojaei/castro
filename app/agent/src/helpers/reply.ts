@@ -1,29 +1,43 @@
-import { ExtendedContext } from './extendedContext.js';
-import mapper from './mapper.js';
+import { Context } from '@xmtp/message-kit';
+import { agentReply } from './agentReply.js';
+import { RESPONSES } from '../constants/responses.js';
+
+const MAX_TOKEN_LENGTH = 500;
 
 /**
- * Processes an incoming message by:
- *   1. Initializing the mapper with the skill’s unique example inputs.
- *   2. Matching the user input sentence to the closest example.
- *   3. Executing the skill based on the incoming message.
+ * Reply function that handles the message.
+ * Direct handling runs hot commands without any delay (AI processing).
+ * Else it will be processed by the AI.
  *
- * @param ctx ExtendedContext containing the message and unique example inputs.
+ * @param ctx Context
+ * @returns void
  */
-export async function reply(ctx: ExtendedContext): Promise<void> {
-  const { text } = ctx.message.content;
-  if (!text) return;
-
+export async function reply(ctx: Context): Promise<void> {
   try {
-    // Initialize the mapper with the unique example inputs.
-    await mapper.initialize(ctx);
+    const { text } = ctx.message.content;
+    if (!text) return;
 
-    // Match the user input to the closest example.
-    const matchedCommand = await mapper.getCommand(text);
-    console.log(`Matched Example Input: ${matchedCommand}`);
-  } catch {
-    // console.error(error);
+    // If the text exceeds the maximum length, return an error message
+    if (text.length > MAX_TOKEN_LENGTH) {
+      await ctx.send({
+        message: RESPONSES.EXCEEDS_MAX_LENGTH,
+        originalMessage: ctx.message,
+      });
+      return;
+    }
+
+    if (text.startsWith('/')) {
+      // Handle direct commands
+      await ctx.executeSkill(text);
+    } else {
+      // Pass non-command messages to the AI agent
+      await agentReply(ctx);
+    }
+  } catch (error) {
+    console.error('Error during reply:', error);
+    await ctx.send({
+      message: RESPONSES.ERROR,
+      originalMessage: ctx.message,
+    });
   }
-
-  // Execute the skill normally.
-  ctx.executeSkill(text);
 }

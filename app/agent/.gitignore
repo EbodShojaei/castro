@@ -23,3 +23,6 @@ yarn-error.log*
 
 # big files
 *.bin
+
+# Ignore .sh
+*.sh

@@ -1,15 +1,42 @@
-version: '3.8'
-
 services:
-  castro-agent:
+  castro:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - '3000:3000'
+      - '3000:3000' # Expose your app
     env_file:
       - .env
+    environment:
+      OLLAMA_API_URL: 'http://ollama:11434/api'
+    depends_on:
+      ollama:
+        condition: service_healthy
     volumes:
       - .:/app
       - /app/node_modules
-    command: yarn start
+    networks:
+      - castro-network
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - '11434:11434' # Expose Ollama API
+    volumes:
+      - ollama-models:/root/.ollama/models
+    networks:
+      - castro-network
+    entrypoint: >
+      /bin/bash -c "apt-get update && apt-get install -y curl && ollama serve & until curl -sf http://localhost:11434/api/ps; do sleep 1; done && ollama pull mistral && tail -f /dev/null"
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:11434/api/ps']
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
+volumes:
+  ollama-models:
+
+networks:
+  castro-network:
+    driver: bridge

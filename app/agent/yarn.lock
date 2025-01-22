@@ -1224,6 +1224,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^20.8.4":
+  version: 20.17.14
+  resolution: "@types/node@npm:20.17.14"
+  dependencies:
+    undici-types: "npm:~6.19.2"
+  checksum: 10c0/2af0722989c677416dec4d9bc37e262a9724e090e5ce021a976e4ab12d4fa26aecbb00dddc8114d0fbf4a6552f12ace0ec98156247a20bf4d57809b7ce90ea5a
+  languageName: node
+  linkType: hard
+
 "@types/offscreencanvas@npm:~2019.3.0":
   version: 2019.3.0
   resolution: "@types/offscreencanvas@npm:2019.3.0"
@@ -2212,6 +2221,7 @@ __metadata:
     eslint-plugin-prettier: "npm:^5.2.1"
     eslint-plugin-unused-imports: "npm:^4.1.4"
     knip: "npm:^5.42.0"
+    ollama-node: "npm:^0.1.28"
     prettier: "npm:^3.4.2"
     typescript: "npm:^5.7.3"
   languageName: unknown
@@ -4486,6 +4496,15 @@ __metadata:
   version: 4.1.1
   resolution: "object-assign@npm:4.1.1"
   checksum: 10c0/1f4df9945120325d041ccf7b86f31e8bcc14e73d29171e37a7903050e96b81323784ec59f93f102ec635bcf6fa8034ba3ea0a8c7e69fa202b87ae3b6cec5a414
+  languageName: node
+  linkType: hard
+
+"ollama-node@npm:^0.1.28":
+  version: 0.1.28
+  resolution: "ollama-node@npm:0.1.28"
+  dependencies:
+    "@types/node": "npm:^20.8.4"
+  checksum: 10c0/f8c21f3a59703983019c435715fa3c66d9218e9d439cdc249165700b9fa73e06ac5997e90326c75c6866923a0c3f13799a8214f9b5dc00ecae41b3b3bea6e8c4
   languageName: node
   linkType: hard
 
