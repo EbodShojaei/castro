@@ -1,4 +1,5 @@
 export enum ModelType {
-  MISTRAL = 'mistral',
-  OPENAI = 'openai',
+  TINYLLAMA = 'tinyllama', // fast and cheap
+  MISTRAL = 'mistral', // way too slow (> 1-2 minutes)
+  OPENAI = 'openai', // too expensive
 }

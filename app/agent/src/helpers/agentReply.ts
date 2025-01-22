@@ -35,7 +35,7 @@ export async function agentReply(context: Context) {
     chatMemory.addEntry(memoryKey, userPrompt, 'user');
 
     // Use AI Model Factory to create the model
-    const aiModel = ModelFactory.createModel(ModelType.MISTRAL);
+    const aiModel = ModelFactory.createModel(ModelType.TINYLLAMA);
     const reply = await aiModel.generateResponse(userPrompt, systemPrompt);
 
     const messages = reply.split('\n').filter((msg) => msg.trim().length > 0);

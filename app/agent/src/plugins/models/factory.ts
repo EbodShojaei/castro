@@ -1,11 +1,11 @@
 import { Model } from './model.js';
-import { MistralModel } from './mistral.js';
+import { OllamaModel } from './ollama.js';
 import { ModelType } from './types.js';
 
 export class ModelFactory {
   static createModel(modelType: ModelType): Model {
-    if (modelType === ModelType.MISTRAL) {
-      return new MistralModel();
+    if (modelType === ModelType.TINYLLAMA) {
+      return new OllamaModel();
     }
 
     throw new Error(`Unsupported AI model type: ${modelType}`);

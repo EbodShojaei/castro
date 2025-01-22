@@ -27,7 +27,7 @@ services:
     networks:
       - castro-network
     entrypoint: >
-      /bin/bash -c "apt-get update && apt-get install -y curl && ollama serve & until curl -sf http://localhost:11434/api/ps; do sleep 1; done && ollama pull mistral && tail -f /dev/null"
+      /bin/bash -c "apt-get update && apt-get install -y curl && ollama serve & until curl -sf http://localhost:11434/api/ps; do sleep 1; done && ollama pull tinyllama && tail -f /dev/null"
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:11434/api/ps']
       interval: 10s

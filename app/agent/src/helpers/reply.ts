@@ -2,7 +2,7 @@ import { Context } from '@xmtp/message-kit';
 import { agentReply } from './agentReply.js';
 import { RESPONSES } from '../constants/responses.js';
 
-const MAX_TOKEN_LENGTH = 500;
+const MAX_TOKEN_LENGTH = 800;
 
 /**
  * Reply function that handles the message.
