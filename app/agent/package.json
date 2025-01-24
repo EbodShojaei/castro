@@ -7,7 +7,7 @@
     "license": "MIT",
     "scripts": {
         "build": "tsc",
-        "start": "tsc && node dist/index.js",
+        "start": "yarn build && node dist/index.js",
         "dev": "tsc -w && node --watch dist/index.js",
         "lint": "tsc --noEmit && eslint \"src/**/*.ts\" && knip && depcheck",
         "lint:fix": "tsc --noEmit && eslint \"src/**/*.ts\" --fix && knip && depcheck",
