@@ -1,8 +1,6 @@
 import { Context } from '@xmtp/message-kit';
 import type { Skill } from '@xmtp/message-kit';
 
-const inputs = ['ping', 'ping pong', 'ping-pong'];
-
 /**
  * Ping pong checks if server aka agent healthy or not.
  * Client sends a ping request and server responds with pong.
@@ -15,7 +13,7 @@ export const ping: Skill[] = [
   {
     skill: 'ping',
     handler: handler,
-    examples: ['/ping', ...inputs],
+    examples: ['/ping'],
     description: 'Check agent activity.',
   },
 ];

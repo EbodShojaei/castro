@@ -1863,6 +1863,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "castro-agent@workspace:."
   dependencies:
+    "@redis/client": "npm:^1.6.0"
     "@types/node": "npm:^22.10.5"
     "@typescript-eslint/eslint-plugin": "npm:^8.19.1"
     "@typescript-eslint/parser": "npm:^8.19.1"

@@ -14,6 +14,7 @@
         "format": "prettier --write \"src/**/*.ts\""
     },
     "dependencies": {
+        "@redis/client": "^1.6.0",
         "@xmtp/message-kit": "^1.3.1",
         "axios": "^1.7.9"
     },

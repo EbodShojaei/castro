@@ -9,14 +9,14 @@ import { ModelFactory } from '../plugins/models/factory.js';
 import { ModelType } from '../plugins/models/types.js';
 import { RESPONSES } from '../constants/responses.js';
 
-export async function agentReply(context: Context) {
+export async function agentReply(ctx: Context) {
   const {
     message: {
       content: { text, params },
       sender,
     },
     agent,
-  } = context;
+  } = ctx;
 
   try {
     const systemPrompt = await parsePrompt(
@@ -27,10 +27,7 @@ export async function agentReply(context: Context) {
 
     const userPrompt = params?.prompt ?? text;
 
-    const memoryKey = context.getMemoryKey(
-      sender.address,
-      context.conversation.id,
-    );
+    const memoryKey = ctx.getMemoryKey(sender.address, ctx.conversation.id);
     chatMemory.createMemory(memoryKey, systemPrompt);
     chatMemory.addEntry(memoryKey, userPrompt, 'user');
 
@@ -39,14 +36,33 @@ export async function agentReply(context: Context) {
     const reply = await aiModel.generateResponse(userPrompt, systemPrompt);
 
     const messages = reply.split('\n').filter((msg) => msg.trim().length > 0);
-    await processMultilineResponse(messages, context);
+    // Get the message that starts with a slash in the messages array
+    let [command] = messages.filter((msg) => msg.startsWith('/'));
 
-    return { reply };
+    const RETRIES = 3;
+    for (let i = 0; i < RETRIES; i++) {
+      if (command) {
+        break;
+      }
+      const newReply = await aiModel.generateResponse(userPrompt, systemPrompt);
+      const newMessages = newReply
+        .split('\n')
+        .filter((msg) => msg.trim().length > 0);
+      [command] = newMessages.filter((msg) => msg.startsWith('/'));
+    }
+
+    if (command.startsWith('/')) {
+      // Handle direct commands
+      await ctx.executeSkill(command);
+    } else {
+      await processMultilineResponse(messages, ctx);
+      // return { reply };
+    }
   } catch (error) {
     console.error('Error during agent reply:', error);
-    await context.send({
+    await ctx.send({
       message: RESPONSES.ERROR,
-      originalMessage: context.message,
+      originalMessage: ctx.message,
     });
     return { reply: RESPONSES.ERROR };
   }
