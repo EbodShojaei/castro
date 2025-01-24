@@ -199,6 +199,66 @@ sudo gcloud compute firewall-rules list
 
 ```
 
+### **F. Docker Compose Issues:**
+
+Since this is a multi-service architecture (Node server, Ollama), the built image will require the compose file to orchestrate the services. If there are issues with Docker Compose, it may be due to incorrect configuration or missing dependencies. To fix this, ensure that the Docker Compose file is correctly configured and that all dependencies are installed.
+
+If you have shell access to the GCloud AI server (which you should), then use vim or nano (I like vim more) to create the `docker-compose.yml` file in the root directory of the project. Here is an example of a `docker-compose.yml` file that orchestrates the Castro and Ollama services:
+
+```bash
+
+services:
+  castro:
+    image: us-central1-docker.pkg.dev/app-name/private-repo/app-image:latest
+    ports:
+      - '3000:3000'  # Expose the app
+    env_file:
+      - .env
+    depends_on:
+      ollama:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - '11434:11434'  # Expose Ollama API
+    volumes:
+      - ollama-models:/root/.ollama/models
+    networks:
+      - castro-network
+    entrypoint: >
+      /bin/bash -c "apt-get update && apt-get install -y curl && ollama serve & until curl -sf http://localhost:11434/api/ps; do sleep 1; done && ollama pull tinyllama && tail -f /dev/null"
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:11434/api/ps']
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
+volumes:
+  ollama-models:
+
+networks:
+  castro-network:
+    driver: bridge
+
+```
+
+You can also create the .env file in the same directory as the compose file to ensure that the services receive the necessary environment variables. To save you the trouble of navigating to the already provided ```env.example``` file (you're welcome), here is an example of an .env file that contains the environment variables for the Castro service:
+
+```bash
+
+OLLAMA_API_URL=
+
+REDIS_CONNECTION_STRING=
+
+TEST_ENCRYPTION_KEY= # auto-generated
+
+KEY= # auto-generated
+
+```
+
 ## Acknowledgements
 
 The network topology was designed by @EbodShojaei using Google Cloud Platform tutorials and documentation. AI was used to troubleshoot. All commands are tested and working.
