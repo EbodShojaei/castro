@@ -98,7 +98,7 @@ To pull and run the Castro Agent on the AI server, we will need to install Docke
 sudo gcloud auth configure-docker us-central1-docker.pkg.dev
 sudo docker pull us-central1-docker.pkg.dev/project-name/private-repo/app-image:latest
 sudo docker run -d --name app-name us-central1-docker.pkg.dev/project-name/private-repo/app-image:latest
-sudo docker run app-name
+sudo docker start app-name
 
 ```
 
