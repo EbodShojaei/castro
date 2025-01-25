@@ -12,6 +12,6 @@ Refer to the docs to see how to host this castro (i.e., kingdom). The hosting pr
 
 Firewalls are setup to prevent unauthorized traffic. Imagine removing the bastion server. If the AI model was advanced enough, this would essentially be a self-enclosed AI entity that cannot be accessed without some other approach, which at the moment, is not clear to me how. That is true fear.
 
-The network is setup to allow the AI to make outgoing requests, with the possibility of swapping IPs (after all, it has 18 quintillion to choose from). Hypothetically, depending on the response the AI receives, could possibly discombulate the model if the tokens received from the response could somehow cause a malfunction. Again, this is just an unproven assumption, but think of it as the equivalent of a SQL injection but to crash the model. God help us all if the AI self-operates and multiplies.
+The network is setup to allow the AI to make outgoing requests, with the possibility of swapping IPs (after all, it has 18 quintillion to choose from). Hypothetically, depending on the response the AI receives, could possibly discombobulate the model if the tokens received from the response could somehow cause a malfunction. Again, this is just an unproven assumption, but think of it as the equivalent of a SQL injection but to crash the model. God help us all if the AI self-operates and multiplies.
 
 Explore the repo to find out more.
