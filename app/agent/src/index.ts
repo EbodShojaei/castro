@@ -13,7 +13,7 @@ export const agent = createAgent({
   name: 'Castro Agent',
   tag: '@castro',
   systemPrompt: SYSTEM_PROMPT,
-  description: 'A data retrieval agent that actively accesses an MLB database.',
+  description: 'A data retrieval agent that retrieves current crypto prices.',
   skills: [help, ping, price],
   onMessage: async (context: Context) => {
     try {
