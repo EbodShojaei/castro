@@ -1,6 +1,8 @@
-# castro
+# Castro
 
 What is this? An AI chat bot. But isn't that just ChatGPT? Not quite. ChatGPT does not use the XMTP protocol, a WEB3-based communication network. What does this mean? This means the next-gen mode of secure, encrypted communication, that is decentralized. What do I mean by decentralized? As in, there is no singular entity that manages the messages. Instead, the node providers, aka blockchain miners, are the backbone of hosting the network without relying on a single provider, classically, a server-provider.
+
+![image](https://github.com/user-attachments/assets/1d6f256e-d298-4359-be4b-413eba56204b)
 
 In layman terms, you can chat with this AI as long as you have its blockchain wallet address and an XMTP-enabled client to chat with it, like my Next.js client or more sophisticated client apps like [Converse](https://converse.xyz).
 
